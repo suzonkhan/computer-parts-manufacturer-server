@@ -111,6 +111,14 @@ async function run(){
                 res.send(orders);  
         })
 
+        //Load Single Order
+        app.get('/order/:id', async(req, res)=>{
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const order = await orderCollection.findOne(query);
+            res.send(order);
+        })
+
         //make payment
         app.put('/order/payment/:id', async(req, res)=>{ 
             const id = req.params.id;  
