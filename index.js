@@ -26,7 +26,8 @@ async function run(){
         const usersCollection = client.db("manufacturer").collection("users");
         const productCollection = client.db("manufacturer").collection("products");
         const orderCollection = client.db("manufacturer").collection("orders");
-        
+        const reviewCollection = client.db("manufacturer").collection("review");
+
          console.log("Connected successfully to server");
 
 
@@ -52,6 +53,7 @@ async function run(){
            const user = await usersCollection.findOne(query);
             res.send(user);
         })
+
         // Update User 
         app.put('/user/update/:email', async(req, res)=>{ 
             const email = req.params.email;
@@ -133,6 +135,23 @@ async function run(){
             res.send(result);
         })
 
+        // Create product review 
+        app.post('/review', async(req, res)=>{ 
+            const newProduct = req.body; 
+            console.log(newProduct);
+            const result = await reviewCollection.insertOne(newProduct);
+            console.log(`A review was inserted with the _id: ${result.insertedId}`);
+            res.send(result); 
+        })
+
+     
+        // View product review  
+        app.get('/reviews', async (req, res)=>{
+            const query = { }; 
+            const cursor = reviewCollection.find(query);
+            const reviews =   await cursor.toArray();
+            res.send(reviews);
+        })
 
   }
   finally{
