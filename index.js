@@ -46,6 +46,13 @@ async function run(){
             const token = jwt.sign({ email: email }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1h' })
             res.send({ result, token });
         })
+        // Display User 
+        app.get('/users', async(req, res)=>{ 
+            const query = { }; 
+            const cursor = usersCollection.find(query);
+            const users =   await cursor.toArray();
+            res.send(users);
+        })
 
         // Display User 
         app.get('/user/:email', async(req, res)=>{ 
@@ -69,6 +76,17 @@ async function run(){
             res.send(result);
         })
 
+        // Make admin User 
+        app.put('/user/admin/:email', async (req, res) => {
+            const email = req.params.email; 
+            const filter = { email: email };
+            const updateDoc = {
+              $set: { role: 'admin' },
+            };
+            const result = await usersCollection.updateOne(filter, updateDoc);
+            res.send(result);
+          
+        })
 
         // Create product  
         app.post('/product', async(req, res)=>{ 
